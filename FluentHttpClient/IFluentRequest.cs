@@ -5,11 +5,20 @@
 public interface IFluentRequest
 {
     /// <summary>
-    /// Sets the URL for the HTTP request.
+    /// Sets the URL for the HTTP request, automatically prepending "https://" as the scheme.
+    /// The input should not include the scheme.
     /// </summary>
-    /// <param name="url">The URL to send the request to.</param>
+    /// <param name="urlWithoutScheme">The URL without the scheme (e.g. "example.com/api").</param>
     /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
-    IFluentRequest Url(string url);
+    IFluentRequest UseHttps(string urlWithoutScheme);
+
+    /// <summary>
+    /// Sets the URL for the HTTP request, automatically prepending "http://" as the scheme.
+    /// The input should not include the scheme.
+    /// </summary>
+    /// <param name="urlWithoutScheme">The URL without the scheme (e.g. "example.com/api").</param>
+    /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
+    IFluentRequest UseHttp(string urlWithoutScheme);
 
     /// <summary>
     /// Adds a header to the HTTP request.
@@ -17,7 +26,7 @@ public interface IFluentRequest
     /// <param name="name">The name of the header.</param>
     /// <param name="value">The value of the header.</param>
     /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
-    IFluentRequest WithHeader(string name, string value);
+    IFluentRequest AddHeader(string name, string value);
 
     /// <summary>
     /// Sets the request body using a raw <see cref="HttpContent"/> instance.
