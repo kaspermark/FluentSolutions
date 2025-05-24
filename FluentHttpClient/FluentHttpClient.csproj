@@ -15,6 +15,8 @@
 		<PackageTags>httpclient;fluent;di;dotnet;rest</PackageTags>
 		<RepositoryUrl>https://github.com/kaspermark/FluentSolutions</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Copyright>© 2025 Kasper Mark Søndergaard. Alle rettigheder forbeholdes.</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>
