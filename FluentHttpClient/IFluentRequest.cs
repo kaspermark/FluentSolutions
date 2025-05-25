@@ -72,5 +72,11 @@ public interface IFluentRequest
     /// </summary>
     /// <returns>A task representing the asynchronous operation, with an <see cref="HttpResponseMessage"/> result.</returns>
     Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Sends the HTTP request asynchronously and deserializes to the specified model.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation, with an <see cref="HttpResponseMessage"/> result.</returns>
+    Task<T> ExecuteAndDeserializeAsync<T>(CancellationToken cancellationToken = default);
 }
 

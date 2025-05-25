@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
+using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json;
 using System.Web;
 
 namespace FluentHttpClient;
@@ -55,7 +55,7 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
     }
     public IFluentRequest WithBody<T>(T model)
     {
-        var json = JsonSerializer.Serialize(model);
+        var json = JsonConvert.SerializeObject(model);
         return WithBody(json, "application/json");
     }
 
@@ -86,6 +86,18 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         _request.RequestUri = new Uri(newUrl);
 
         return await httpClient.SendAsync(_request, cancellationToken);
+    }
+
+    public async Task<T> ExecuteAndDeserializeAsync<T>(CancellationToken cancellationToken = default)
+    {
+        var response = await ExecuteAsync(cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var result = JsonConvert.DeserializeObject<T>(content);
+
+        return result == null ? throw new JsonSerializationException("Deserialization returned null.") : result;
     }
 
     private void EnsureBodyNotSet()
