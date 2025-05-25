@@ -62,6 +62,12 @@ public interface IFluentRequest
     IFluentRequest WithBody<T>(T model);
 
     /// <summary>
+    /// Adds a query parameter to the Uri once the request is executed.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation, with an <see cref="HttpResponseMessage"/> result.</returns>
+    IFluentRequest AddQueryParam(string name, string value);
+
+    /// <summary>
     /// Sends the HTTP request asynchronously and returns the response.
     /// </summary>
     /// <returns>A task representing the asynchronous operation, with an <see cref="HttpResponseMessage"/> result.</returns>
