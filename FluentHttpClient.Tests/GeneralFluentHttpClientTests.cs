@@ -11,6 +11,8 @@ public class GeneralFluentHttpClientTests
     [InlineData("GET", "http", "httpbin.org/get")]
     [InlineData("POST", "https", "httpbin.org/post")]
     [InlineData("POST", "http", "httpbin.org/post")]
+    [InlineData("PUT", "https", "httpbin.org/put")]
+    [InlineData("PUT", "http", "httpbin.org/put")]
     public async Task Request_WithCorrectRequest_ShouldCreateCorrectRequest(string methodName, string scheme, string url)
     {
         var method = new HttpMethod(methodName);
@@ -19,6 +21,7 @@ public class GeneralFluentHttpClientTests
         {
             "GET" => Client.Get(),
             "POST" => Client.Post(),
+            "PUT" => Client.Put(),
             _ => throw new NotSupportedException()
         };
 
@@ -32,10 +35,10 @@ public class GeneralFluentHttpClientTests
         var response = await requestBuilder.ExecuteAsync();
 
         response.IsSuccessStatusCode.Should().BeTrue();
-        response.RequestMessage.Should().NotBeNull();
+        response.RequestMessage.Should().NotBe(null);
 
         response.RequestMessage.Method.Should().Be(method);
-        response.RequestMessage.RequestUri.Should().NotBeNull();
+        response.RequestMessage.RequestUri.Should().NotBe(null);
         response.RequestMessage.RequestUri.Scheme.Should().Be(scheme);
         response.RequestMessage.RequestUri.Host.Should().Be($"{url.Split("/")[0]}");
         response.RequestMessage.RequestUri.AbsolutePath.Should().Be($"/{url.Split("/")[1]}");
@@ -44,13 +47,18 @@ public class GeneralFluentHttpClientTests
 
     [Theory]
     [InlineData("GET", "httpbin.org/post", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("GET", "httpbin.org/put", HttpStatusCode.MethodNotAllowed)]
     [InlineData("POST", "httpbin.org/get", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("POST", "httpbin.org/put", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("PUT", "httpbin.org/get", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("PUT", "httpbin.org/post", HttpStatusCode.MethodNotAllowed)]
     public async Task Request_WithWrongMethodEndpoint_ShouldReturnExpectedStatusCode(string method, string url, HttpStatusCode expectedStatus)
     {
         var builder = method switch
         {
             "GET" => Client.Get(),
             "POST" => Client.Post(),
+            "PUT" => Client.Put(),
             _ => throw new NotSupportedException()
         };
 
@@ -61,12 +69,14 @@ public class GeneralFluentHttpClientTests
     [Theory]
     [InlineData("GET", "httpbin.ork/get")]
     [InlineData("POST", "httpbin.ork/post")]
+    [InlineData("PUT", "httpbin.ork/put")]
     public async Task Request_WithFaultyHttpsUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
         {
             "GET" => Client.Get(),
             "POST" => Client.Post(),
+            "PUT" => Client.Put(),
             _ => throw new NotSupportedException()
         };
 
@@ -78,12 +88,14 @@ public class GeneralFluentHttpClientTests
     [Theory]
     [InlineData("GET", "httpbin.ork/get")]
     [InlineData("POST", "httpbin.ork/post")]
+    [InlineData("PUT", "httpbin.ork/put")]
     public async Task Request_WithFaultyHttpUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
         {
             "GET" => Client.Get(),
             "POST" => Client.Post(),
+            "PUT" => Client.Put(),
             _ => throw new NotSupportedException()
         };
 
@@ -95,12 +107,14 @@ public class GeneralFluentHttpClientTests
     [Theory]
     [InlineData("GET", "httpbin.org/get")]
     [InlineData("POST", "httpbin.org/post")]
+    [InlineData("PUT", "httpbin.org/put")]
     public async Task Request_WithTwoHttpsUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
         {
             "GET" => Client.Get(),
             "POST" => Client.Post(),
+            "PUT" => Client.Put(),
             _ => throw new NotSupportedException()
         };
 
@@ -112,12 +126,14 @@ public class GeneralFluentHttpClientTests
     [Theory]
     [InlineData("GET", "httpbin.org/get")]
     [InlineData("POST", "httpbin.org/post")]
+    [InlineData("PUT", "httpbin.org/put")]
     public async Task Request_WithTwoHttpUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
         {
             "GET" => Client.Get(),
             "POST" => Client.Post(),
+            "PUT" => Client.Put(),
             _ => throw new NotSupportedException()
         };
 
@@ -131,16 +147,23 @@ public class GeneralFluentHttpClientTests
     [InlineData("GET", 5)]
     [InlineData("GET", 10)]
     [InlineData("GET", 100)]
-    public async Task Request_WithHeaders_ShouldHaveCorrectAmountOfHeaders(string methodName, int expectedHeaderCount)
+    [InlineData("POST", 1)]
+    [InlineData("POST", 5)]
+    [InlineData("POST", 10)]
+    [InlineData("POST", 100)]
+    [InlineData("PUT", 1)]
+    [InlineData("PUT", 5)]
+    [InlineData("PUT", 10)]
+    [InlineData("PUT", 100)]
+    public async Task Request_WithHeaders_ShouldHaveCorrectAmountOfHeaders(string method, int expectedHeaderCount)
     {
-        var method = new HttpMethod(methodName);
+        var httpMethod = new HttpMethod(method);
 
-        var clientBuilder = methodName switch
+        var clientBuilder = method switch
         {
             "GET" => Client.Get(),
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
-            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -154,7 +177,7 @@ public class GeneralFluentHttpClientTests
 
         var response = await clientBuilder.ExecuteAsync();
 
-        response.RequestMessage.Should().NotBeNull();
+        response.RequestMessage.Should().NotBe(null);
         response.RequestMessage.Headers.Should().HaveCount(expectedHeaderCount);
     }
 
@@ -171,6 +194,12 @@ public class GeneralFluentHttpClientTests
     [InlineData("POST", "Name", null)]
     [InlineData("POST", "Name", "")]
     [InlineData("POST", "Name", "        ")]
+    [InlineData("PUT", null, "Value")]
+    [InlineData("PUT", "", "Value")]
+    [InlineData("PUT", "   ", "Value")]
+    [InlineData("PUT", "Name", null)]
+    [InlineData("PUT", "Name", "")]
+    [InlineData("PUT", "Name", "        ")]
     public void Request_WithInvalidHeader_ShouldThrowArgumentException(string methodName, string headerName, string headerValue)
     {
         var method = new HttpMethod(methodName);
@@ -180,7 +209,6 @@ public class GeneralFluentHttpClientTests
             "GET" => Client.Get(),
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
-            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
