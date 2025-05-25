@@ -75,11 +75,6 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
             throw new ArgumentException("name must not be null, empty or whitespace.", nameof(name));
         }
 
-        /*if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new ArgumentException("Header value must not be null, empty or whitespace.", nameof(value));
-        }*/
-
         if (_request.RequestUri == null)
         {
             throw new InvalidOperationException("Url has to be set before adding a query paramater");
@@ -95,7 +90,6 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         {
             throw new InvalidOperationException("Url has to be set");
         }
-        ;
 
         var newUrl = AppendQueryParameters(_request.RequestUri.AbsoluteUri, _queryBuilder.ToDictionary());
         _request.RequestUri = new Uri(newUrl);

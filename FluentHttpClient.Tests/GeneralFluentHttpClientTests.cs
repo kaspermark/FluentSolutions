@@ -327,7 +327,8 @@ public class GeneralFluentHttpClientTests
         };
 
         clientBuilder
-            .UseHttps("httpbin.org/anything").AddQueryParam(name, value);
+            .UseHttps("httpbin.org/anything")
+            .AddQueryParam(name, value);
 
         var response = await clientBuilder.ExecuteAsync();
         response.RequestMessage.Should().NotBeNull();
@@ -354,7 +355,9 @@ public class GeneralFluentHttpClientTests
         };
 
         clientBuilder
-            .UseHttps("httpbin.org/anything").AddQueryParam("Param1", "value").AddQueryParam("Param2", "value");
+            .UseHttps("httpbin.org/anything")
+            .AddQueryParam("Param1", "value")
+            .AddQueryParam("Param2", "value");
 
         var response = await clientBuilder.ExecuteAsync();
         response.RequestMessage.Should().NotBeNull();
