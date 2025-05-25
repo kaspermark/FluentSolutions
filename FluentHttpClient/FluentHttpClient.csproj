@@ -16,7 +16,7 @@
 		<RepositoryUrl>https://github.com/kaspermark/FluentSolutions</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Copyright>© 2025 Kasper Mark Søndergaard. Alle rettigheder forbeholdes.</Copyright>
+		<Copyright>© 2025 Kasper Mark Søndergaard. All rights reserved.</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>
