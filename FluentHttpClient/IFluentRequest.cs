@@ -71,6 +71,6 @@ public interface IFluentRequest
     /// Sends the HTTP request asynchronously and returns the response.
     /// </summary>
     /// <returns>A task representing the asynchronous operation, with an <see cref="HttpResponseMessage"/> result.</returns>
-    Task<HttpResponseMessage> ExecuteAsync();
+    Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken = default);
 }
 

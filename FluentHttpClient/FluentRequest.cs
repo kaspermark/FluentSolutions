@@ -7,16 +7,7 @@ namespace FluentHttpClient;
 public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRequest
 {
     private readonly HttpRequestMessage _request = new(method, "");
-    private readonly QueryBuilder _queryBuilder = new QueryBuilder();
-
-    private bool IsBodySet()
-    {
-        return _request.Content != null;
-    }
-    private bool IsUrlSet()
-    {
-        return _request.RequestUri != null;
-    }
+    private readonly QueryBuilder _queryBuilder = [];
 
     public IFluentRequest UseHttps(string urlWithoutScheme)
     {
@@ -84,7 +75,7 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         return this;
     }
 
-    public async Task<HttpResponseMessage> ExecuteAsync()
+    public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         if (_request.RequestUri == null)
         {
@@ -94,7 +85,7 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         var newUrl = AppendQueryParameters(_request.RequestUri.AbsoluteUri, _queryBuilder.ToDictionary());
         _request.RequestUri = new Uri(newUrl);
 
-        return await httpClient.SendAsync(_request);
+        return await httpClient.SendAsync(_request, cancellationToken);
     }
 
     private void EnsureBodyNotSet()
@@ -123,7 +114,7 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         return method == HttpMethod.Get || method == HttpMethod.Delete;
     }
 
-    private static string AppendQueryParameters(string uri, Dictionary<string, string> parameters)
+    private string AppendQueryParameters(string uri, Dictionary<string, string> parameters)
     {
         var uriBuilder = new UriBuilder(uri);
         var query = HttpUtility.ParseQueryString(uriBuilder.Query);
@@ -135,5 +126,14 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
 
         uriBuilder.Query = query.ToString();
         return uriBuilder.Uri.ToString();
+    }
+
+    private bool IsBodySet()
+    {
+        return _request.Content != null;
+    }
+    private bool IsUrlSet()
+    {
+        return _request.RequestUri != null;
     }
 }
