@@ -15,6 +15,8 @@ public class GeneralFluentHttpClientTests
     [InlineData("PUT", "http", "httpbin.org/put")]
     [InlineData("PATCH", "https", "httpbin.org/patch")]
     [InlineData("PATCH", "http", "httpbin.org/patch")]
+    [InlineData("DELETE", "https", "httpbin.org/delete")]
+    [InlineData("DELETE", "http", "httpbin.org/delete")]
     public async Task Request_WithCorrectRequest_ShouldCreateCorrectRequest(string methodName, string scheme, string url)
     {
         var method = new HttpMethod(methodName);
@@ -25,6 +27,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -52,15 +55,23 @@ public class GeneralFluentHttpClientTests
     [InlineData("GET", "httpbin.org/post", HttpStatusCode.MethodNotAllowed)]
     [InlineData("GET", "httpbin.org/put", HttpStatusCode.MethodNotAllowed)]
     [InlineData("GET", "httpbin.org/patch", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("GET", "httpbin.org/delete", HttpStatusCode.MethodNotAllowed)]
     [InlineData("POST", "httpbin.org/get", HttpStatusCode.MethodNotAllowed)]
     [InlineData("POST", "httpbin.org/put", HttpStatusCode.MethodNotAllowed)]
     [InlineData("POST", "httpbin.org/patch", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("POST", "httpbin.org/delete", HttpStatusCode.MethodNotAllowed)]
     [InlineData("PUT", "httpbin.org/get", HttpStatusCode.MethodNotAllowed)]
     [InlineData("PUT", "httpbin.org/post", HttpStatusCode.MethodNotAllowed)]
     [InlineData("PUT", "httpbin.org/patch", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("PUT", "httpbin.org/delete", HttpStatusCode.MethodNotAllowed)]
     [InlineData("PATCH", "httpbin.org/get", HttpStatusCode.MethodNotAllowed)]
     [InlineData("PATCH", "httpbin.org/post", HttpStatusCode.MethodNotAllowed)]
     [InlineData("PATCH", "httpbin.org/put", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("PATCH", "httpbin.org/delete", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("DELETE", "httpbin.org/get", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("DELETE", "httpbin.org/post", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("DELETE", "httpbin.org/put", HttpStatusCode.MethodNotAllowed)]
+    [InlineData("DELETE", "httpbin.org/patch", HttpStatusCode.MethodNotAllowed)]
     public async Task Request_WithWrongMethodEndpoint_ShouldReturnExpectedStatusCode(string method, string url, HttpStatusCode expectedStatus)
     {
         var builder = method switch
@@ -69,6 +80,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -81,6 +93,7 @@ public class GeneralFluentHttpClientTests
     [InlineData("POST", "httpbin.ork/post")]
     [InlineData("PUT", "httpbin.ork/put")]
     [InlineData("PATCH", "httpbin.ork/patch")]
+    [InlineData("DELETE", "httpbin.ork/delete")]
     public async Task Request_WithFaultyHttpsUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
@@ -89,6 +102,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -102,6 +116,7 @@ public class GeneralFluentHttpClientTests
     [InlineData("POST", "httpbin.ork/post")]
     [InlineData("PUT", "httpbin.ork/put")]
     [InlineData("PATCH", "httpbin.ork/patch")]
+    [InlineData("DELETE", "httpbin.ork/delete")]
     public async Task Request_WithFaultyHttpUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
@@ -110,6 +125,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -123,6 +139,7 @@ public class GeneralFluentHttpClientTests
     [InlineData("POST", "httpbin.org/post")]
     [InlineData("PUT", "httpbin.org/put")]
     [InlineData("PATCH", "httpbin.org/patch")]
+    [InlineData("DELETE", "httpbin.org/delete")]
     public async Task Request_WithTwoHttpsUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
@@ -131,6 +148,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -144,6 +162,7 @@ public class GeneralFluentHttpClientTests
     [InlineData("POST", "httpbin.org/post")]
     [InlineData("PUT", "httpbin.org/put")]
     [InlineData("PATCH", "httpbin.org/patch")]
+    [InlineData("DELETE", "httpbin.org/delete")]
     public async Task Request_WithTwoHttpUrl_ShouldThrowException(string method, string url)
     {
         var builder = method switch
@@ -152,6 +171,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -177,6 +197,10 @@ public class GeneralFluentHttpClientTests
     [InlineData("PATCH", 5)]
     [InlineData("PATCH", 10)]
     [InlineData("PATCH", 100)]
+    [InlineData("DELETE", 1)]
+    [InlineData("DELETE", 5)]
+    [InlineData("DELETE", 10)]
+    [InlineData("DELETE", 100)]
     public async Task Request_WithHeaders_ShouldHaveCorrectAmountOfHeaders(string method, int expectedHeaderCount)
     {
         var httpMethod = new HttpMethod(method);
@@ -187,6 +211,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 
@@ -229,6 +254,12 @@ public class GeneralFluentHttpClientTests
     [InlineData("PATCH", "Name", null)]
     [InlineData("PATCH", "Name", "")]
     [InlineData("PATCH", "Name", "        ")]
+    [InlineData("DELETE", null, "Value")]
+    [InlineData("DELETE", "", "Value")]
+    [InlineData("DELETE", "   ", "Value")]
+    [InlineData("DELETE", "Name", null)]
+    [InlineData("DELETE", "Name", "")]
+    [InlineData("DELETE", "Name", "        ")]
     public void Request_WithInvalidHeader_ShouldThrowArgumentException(string methodName, string headerName, string headerValue)
     {
         var method = new HttpMethod(methodName);
@@ -239,6 +270,7 @@ public class GeneralFluentHttpClientTests
             "POST" => Client.Post(),
             "PUT" => Client.Put(),
             "PATCH" => Client.Patch(),
+            "DELETE" => Client.Delete(),
             _ => throw new NotSupportedException()
         };
 

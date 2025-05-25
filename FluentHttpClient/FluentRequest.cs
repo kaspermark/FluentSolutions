@@ -74,7 +74,7 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
             throw new InvalidOperationException("WithBody can only be called once.");
         }
 
-        if (_request.Method == HttpMethod.Get)
+        if (_request.Method == HttpMethod.Get || _request.Method == HttpMethod.Delete)
         {
             throw new InvalidOperationException($"HTTP method {_request.Method} does not support a request body.");
         }
