@@ -70,15 +70,21 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
     private void EnsureBodyNotSet()
     {
         if (_bodySet)
+        {
             throw new InvalidOperationException("WithBody can only be called once.");
+        }
 
         if (_request.Method == HttpMethod.Get)
+        {
             throw new InvalidOperationException($"HTTP method {_request.Method} does not support a request body.");
+        }
     }
 
     private void EnsureUrlNotSet()
     {
         if (_urlSet)
-            throw new InvalidOperationException("URL can only be set once, via Url(), UseHttp() or UseHttps().");
+        {
+            throw new InvalidOperationException("URL can only be set once, UseHttp() or UseHttps().");
+        }
     }
 }
