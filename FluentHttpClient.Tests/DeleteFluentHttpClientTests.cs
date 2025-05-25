@@ -4,7 +4,7 @@ using System.Text;
 namespace FluentHttpClient.Tests;
 public class DeleteFluentHttpClientTests
 {
-    private readonly FluentClient Client = new FluentClient(new HttpClient());
+    private readonly FluentClient Client = new(new HttpClient());
 
     [Fact]
     public async Task Delete_WithNormalRequest_ShouldGenerateNoBodyInRequest()

@@ -4,7 +4,7 @@ using System.Text;
 namespace FluentHttpClient.Tests;
 public class GetFluentHttpClientTests
 {
-    private readonly FluentClient Client = new FluentClient(new HttpClient());
+    private readonly FluentClient Client = new(new HttpClient());
 
     [Fact]
     public async Task Get_WithNormalRequest_ShouldGenerateNoBodyInRequest()
