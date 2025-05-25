@@ -109,12 +109,12 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         }
     }
 
-    private bool SupportsRequestBody(HttpMethod method)
+    private static bool SupportsRequestBody(HttpMethod method)
     {
         return method == HttpMethod.Get || method == HttpMethod.Delete;
     }
 
-    private string AppendQueryParameters(string uri, Dictionary<string, string> parameters)
+    private static string AppendQueryParameters(string uri, Dictionary<string, string> parameters)
     {
         var uriBuilder = new UriBuilder(uri);
         var query = HttpUtility.ParseQueryString(uriBuilder.Query);

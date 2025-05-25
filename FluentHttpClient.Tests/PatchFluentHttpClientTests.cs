@@ -5,7 +5,7 @@ using System.Text;
 namespace FluentHttpClient.Tests;
 public class PatchFluentHttpClientTests
 {
-    private readonly FluentClient Client = new FluentClient(new HttpClient());
+    private readonly FluentClient Client = new(new HttpClient());
 
     [Fact]
     public async Task Patch_WithHttpContentBody_ShouldBuildCorrectRequest()

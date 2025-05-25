@@ -4,7 +4,7 @@ using System.Net;
 namespace FluentHttpClient.Tests;
 public class GeneralFluentHttpClientTests
 {
-    private readonly FluentClient Client = new FluentClient(new HttpClient());
+    private readonly FluentClient Client = new(new HttpClient());
 
     [Theory]
     [InlineData("GET", "https", "httpbin.org/get")]
@@ -203,8 +203,6 @@ public class GeneralFluentHttpClientTests
     [InlineData("DELETE", 100)]
     public async Task Request_WithHeaders_ShouldHaveCorrectAmountOfHeaders(string method, int expectedHeaderCount)
     {
-        var httpMethod = new HttpMethod(method);
-
         var clientBuilder = method switch
         {
             "GET" => Client.Get(),
@@ -260,7 +258,7 @@ public class GeneralFluentHttpClientTests
     [InlineData("DELETE", "Name", null)]
     [InlineData("DELETE", "Name", "")]
     [InlineData("DELETE", "Name", "        ")]
-    public void Request_WithInvalidHeader_ShouldThrowArgumentException(string methodName, string headerName, string headerValue)
+    public void Request_WithInvalidHeader_ShouldThrowArgumentException(string methodName, string? headerName, string? headerValue)
     {
         var method = new HttpMethod(methodName);
 
@@ -276,7 +274,7 @@ public class GeneralFluentHttpClientTests
 
         Action act = () => clientBuilder
             .UseHttps("httpbin.org/anything")
-            .AddHeader(headerName, headerValue);
+            .AddHeader(headerName!, headerValue!);
 
         act.Should().Throw<ArgumentException>();
     }
@@ -314,8 +312,6 @@ public class GeneralFluentHttpClientTests
 
     public async Task AddQueryParameters_ShouldIncludeQueryParametersInURI(string method, string name, string value)
     {
-        var httpMethod = new HttpMethod(method);
-
         var clientBuilder = method switch
         {
             "GET" => Client.Get(),
