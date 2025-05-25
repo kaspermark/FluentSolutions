@@ -2,26 +2,42 @@
 using System.Text.Json;
 
 namespace FluentHttpClient;
-public class FluentRequest : IFluentRequest
+public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRequest
 {
-    private readonly HttpClient _httpClient;
-    private readonly HttpRequestMessage _request;
+    private readonly HttpRequestMessage _request = new(method, "");
     private bool _bodySet = false;
+    private bool _urlSet = false;
 
-    public FluentRequest(HttpClient httpClient, HttpMethod method)
+    public IFluentRequest UseHttps(string urlWithoutScheme)
     {
-        _httpClient = httpClient;
-        _request = new HttpRequestMessage(method, "");
-    }
-
-    public IFluentRequest Url(string url)
-    {
+        EnsureUrlNotSet();
+        var url = "https://" + urlWithoutScheme;
         _request.RequestUri = new Uri(url);
+        _urlSet = true;
         return this;
     }
 
-    public IFluentRequest WithHeader(string name, string value)
+    public IFluentRequest UseHttp(string urlWithoutScheme)
     {
+        EnsureUrlNotSet();
+        var url = "http://" + urlWithoutScheme;
+        _request.RequestUri = new Uri(url);
+        _urlSet = true;
+        return this;
+    }
+
+    public IFluentRequest AddHeader(string name, string value)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Header name must not be null, empty or whitespace.", nameof(name));
+        }
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException("Header value must not be null, empty or whitespace.", nameof(value));
+        }
+
         _request.Headers.TryAddWithoutValidation(name, value);
         return this;
     }
@@ -48,12 +64,27 @@ public class FluentRequest : IFluentRequest
 
     public async Task<HttpResponseMessage> ExecuteAsync()
     {
-        return await _httpClient.SendAsync(_request);
+        return await httpClient.SendAsync(_request);
     }
 
     private void EnsureBodyNotSet()
     {
         if (_bodySet)
+        {
             throw new InvalidOperationException("WithBody can only be called once.");
+        }
+
+        if (_request.Method == HttpMethod.Get || _request.Method == HttpMethod.Delete)
+        {
+            throw new InvalidOperationException($"HTTP method {_request.Method} does not support a request body.");
+        }
+    }
+
+    private void EnsureUrlNotSet()
+    {
+        if (_urlSet)
+        {
+            throw new InvalidOperationException("URL can only be set once, UseHttp() or UseHttps().");
+        }
     }
 }

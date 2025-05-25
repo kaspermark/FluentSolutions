@@ -5,11 +5,24 @@
 public interface IFluentRequest
 {
     /// <summary>
-    /// Sets the URL for the HTTP request.
+    /// Sets the URI for the HTTP request by prepending "https://" to the provided URL string. 
     /// </summary>
-    /// <param name="url">The URL to send the request to.</param>
+    /// <param name="urlWithoutScheme">The URL without a scheme (e.g. "example.com/api").</param>
     /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
-    IFluentRequest Url(string url);
+    /// /// <exception cref="InvalidOperationException">
+    /// Thrown if the URL has already been set. Only one of <c>UseHttp</c> or <c>UseHttps</c> may be called.
+    /// </exception>
+    IFluentRequest UseHttps(string urlWithoutScheme);
+
+    /// <summary>
+    /// Sets the URI for the HTTP request by prepending "http://" to the provided URL string. 
+    /// </summary>
+    /// <param name="urlWithoutScheme">The URL without a scheme (e.g. "example.com/api").</param>
+    /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
+    /// /// <exception cref="InvalidOperationException">
+    /// Thrown if the URL has already been set. Only one of <c>UseHttp</c> or <c>UseHttps</c> may be called.
+    /// </exception>
+    IFluentRequest UseHttp(string urlWithoutScheme);
 
     /// <summary>
     /// Adds a header to the HTTP request.
@@ -17,7 +30,7 @@ public interface IFluentRequest
     /// <param name="name">The name of the header.</param>
     /// <param name="value">The value of the header.</param>
     /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
-    IFluentRequest WithHeader(string name, string value);
+    IFluentRequest AddHeader(string name, string value);
 
     /// <summary>
     /// Sets the request body using a raw <see cref="HttpContent"/> instance.
@@ -25,6 +38,7 @@ public interface IFluentRequest
     /// </summary>
     /// <param name="content">The content to send in the request body.</param>
     /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     IFluentRequest WithBody(HttpContent content);
 
     /// <summary>
@@ -34,6 +48,7 @@ public interface IFluentRequest
     /// <param name="content">The string content to send in the request body.</param>
     /// <param name="mediaType">The media type (e.g., "application/json", "text/plain"). Defaults to "text/plain".</param>
     /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     IFluentRequest WithBody(string content, string mediaType = "text/plain");
 
     /// <summary>
@@ -43,6 +58,7 @@ public interface IFluentRequest
     /// <typeparam name="T">The type of the model to serialize.</typeparam>
     /// <param name="model">The model to serialize and send as JSON.</param>
     /// <returns>The current <see cref="IFluentRequest"/> instance for method chaining.</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     IFluentRequest WithBody<T>(T model);
 
     /// <summary>
