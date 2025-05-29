@@ -2,13 +2,13 @@
 using Newtonsoft.Json;
 using System.Text;
 
-namespace FluentHttpClient.Tests;
-public class PutFluentHttpClientTests
+namespace FluentHttpClient.Tests.Methods;
+public class PostFluentHttpClientTests
 {
     private readonly FluentClient Client = new(new HttpClient());
 
     [Fact]
-    public async Task Put_WithHttpContentBody_ShouldBuildCorrectRequest()
+    public async Task Post_WithHttpContentBody_ShouldBuildCorrectRequest()
     {
         // Arrange
         var expectedJson = "{\"Id\":1}";
@@ -16,8 +16,8 @@ public class PutFluentHttpClientTests
 
         // Act
         var response = await Client
-             .Put()
-             .UseHttps("httpbin.org/put")
+             .Post()
+             .UseHttps("httpbin.org/post")
              .WithBody(httpContent)
              .ExecuteAsync();
 
@@ -36,7 +36,7 @@ public class PutFluentHttpClientTests
     }
 
     [Fact]
-    public async Task Put_WithStringBody_ShouldBuildCorrectRequest()
+    public async Task Post_WithStringBody_ShouldBuildCorrectRequest()
     {
         // Arrange
         var expectedBody = "{\"id\":1}";
@@ -44,8 +44,8 @@ public class PutFluentHttpClientTests
 
         // Act
         var response = await Client
-            .Put()
-            .UseHttps("httpbin.org/put")
+            .Post()
+            .UseHttps("httpbin.org/post")
             .WithBody(expectedBody, mediaType)
             .ExecuteAsync();
 
@@ -63,7 +63,7 @@ public class PutFluentHttpClientTests
     }
 
     [Fact]
-    public async Task Put_WithModelBody_ShouldBuildCorrectRequest()
+    public async Task Post_WithModelBody_ShouldBuildCorrectRequest()
     {
         // Arrange
         var model = new { Id = 1 };
@@ -71,8 +71,8 @@ public class PutFluentHttpClientTests
 
         // Act
         var response = await Client
-            .Put()
-            .UseHttps("httpbin.org/put")
+            .Post()
+            .UseHttps("httpbin.org/post")
             .WithBody(model)
             .ExecuteAsync();
 
@@ -91,25 +91,7 @@ public class PutFluentHttpClientTests
     }
 
     [Fact]
-    public async Task Put_WithNoBody_ShouldBuildCorrectRequest()
-    {
-        // Arrange
-
-        // Act
-        var response = await Client
-            .Put()
-            .UseHttps("httpbin.org/put")
-            .ExecuteAsync();
-
-        // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
-
-        response.RequestMessage.Should().NotBe(null);
-        response.RequestMessage.Content.Should().Be(null);
-    }
-
-    [Fact]
-    public async Task Put_WithBodyCalledTwice_ShouldThrowException()
+    public async Task Post_WithBodyCalledTwice_ShouldThrowException()
     {
         // Arrange
         var body = new { Id = 1 };
@@ -117,8 +99,8 @@ public class PutFluentHttpClientTests
 
         // Act
         Func<Task> act = async () => await Client
-            .Put()
-            .UseHttps("httpbin.org/put")
+            .Post()
+            .UseHttps("httpbin.org/post")
             .WithBody(body)
             .WithBody(secondBody)
             .ExecuteAsync();

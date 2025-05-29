@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Text;
 
-namespace FluentHttpClient.Tests;
+namespace FluentHttpClient.Tests.Methods;
 public class PatchFluentHttpClientTests
 {
     private readonly FluentClient Client = new(new HttpClient());
