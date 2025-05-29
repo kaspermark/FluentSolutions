@@ -1,20 +1,20 @@
 ﻿using FluentAssertions;
 using System.Text;
 
-namespace FluentHttpClient.Tests;
-public class GetFluentHttpClientTests
+namespace FluentHttpClient.Tests.Methods;
+public class DeleteFluentHttpClientTests
 {
     private readonly FluentClient Client = new(new HttpClient());
 
     [Fact]
-    public async Task Get_WithNormalRequest_ShouldGenerateNoBodyInRequest()
+    public async Task Delete_WithNormalRequest_ShouldGenerateNoBodyInRequest()
     {
         // Arrange
 
         // Act
         var response = await Client
-            .Get()
-            .UseHttps("httpbin.org/get")
+            .Delete()
+            .UseHttps("httpbin.org/delete")
             .ExecuteAsync();
 
         // Assert
@@ -25,7 +25,7 @@ public class GetFluentHttpClientTests
     }
 
     [Fact]
-    public async Task Get_WithHttpContentBody_ShouldThrowException()
+    public async Task Delete_WithHttpContentBody_ShouldThrowException()
     {
         // Arrange
         var json = "{\"Id\":1}";
@@ -33,8 +33,8 @@ public class GetFluentHttpClientTests
 
         // Act
         Func<Task> act = async () => await Client
-             .Get()
-             .UseHttps("httpbin.org/get")
+             .Delete()
+             .UseHttps("httpbin.org/delete")
              .WithBody(httpContent)
              .ExecuteAsync();
 
@@ -43,14 +43,14 @@ public class GetFluentHttpClientTests
     }
 
     [Fact]
-    public async Task Get_WithStringBody_ShouldThrowException()
+    public async Task Delete_WithStringBody_ShouldThrowException()
     {
         // Arrange
 
         // Act
         Func<Task> act = async () => await Client
-             .Get()
-             .UseHttps("httpbin.org/get")
+             .Delete()
+             .UseHttps("httpbin.org/delete")
              .WithBody("{\"id\":1}", "text/plain")
              .ExecuteAsync();
 
@@ -59,7 +59,7 @@ public class GetFluentHttpClientTests
     }
 
     [Fact]
-    public async Task Get_WithModelBody_ShouldThrowException()
+    public async Task Delete_WithModelBody_ShouldThrowException()
     {
         // Arrange
         var model = new
@@ -69,8 +69,8 @@ public class GetFluentHttpClientTests
 
         // Act
         Func<Task> act = async () => await Client
-             .Get()
-             .UseHttps("httpbin.org/get")
+             .Delete()
+             .UseHttps("httpbin.org/delete")
              .WithBody(model)
              .ExecuteAsync();
 

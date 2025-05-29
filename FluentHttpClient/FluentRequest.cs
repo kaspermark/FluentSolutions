@@ -75,6 +75,20 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         return this;
     }
 
+    private static string AppendQueryParameters(string uri, Dictionary<string, string> parameters)
+    {
+        var uriBuilder = new UriBuilder(uri);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+        foreach (var parameter in parameters)
+        {
+            query[parameter.Key] = parameter.Value;
+        }
+
+        uriBuilder.Query = query.ToString();
+        return uriBuilder.Uri.ToString();
+    }
+
     public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         if (_request.RequestUri == null)
@@ -126,24 +140,11 @@ public class FluentRequest(HttpClient httpClient, HttpMethod method) : IFluentRe
         return method == HttpMethod.Post || method == HttpMethod.Put || method == HttpMethod.Patch;
     }
 
-    private static string AppendQueryParameters(string uri, Dictionary<string, string> parameters)
-    {
-        var uriBuilder = new UriBuilder(uri);
-        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-
-        foreach (var parameter in parameters)
-        {
-            query[parameter.Key] = parameter.Value;
-        }
-
-        uriBuilder.Query = query.ToString();
-        return uriBuilder.Uri.ToString();
-    }
-
     private bool IsBodySet()
     {
         return _request.Content != null;
     }
+
     private bool IsUrlSet()
     {
         return _request.RequestUri != null;
